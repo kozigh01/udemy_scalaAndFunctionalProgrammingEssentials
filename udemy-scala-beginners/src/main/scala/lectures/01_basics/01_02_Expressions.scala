@@ -1,4 +1,4 @@
-package lectures.`01_basics`
+package lectures.`02_basics`
 
 object Expressions {
   def main(args: Array[String]): Unit =

@@ -1,4 +1,4 @@
-package lectures.`01_basics`
+package lectures.`03_basics`
 
 @main def main(): Unit =
   def aFunction(a: String, b: Int): String =
