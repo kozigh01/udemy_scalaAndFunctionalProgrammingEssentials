@@ -1,19 +1,25 @@
 package lectures.`02_OOP`
 
 object `02_01_MethodNotations` extends App {
-  class Person(val name: String, favoriteMovies: String):
-    def likes(movie: String): Boolean = movie == favoriteMovies
+  class Person(val name: String, favoriteMovie: String, val age: Int = 0):
+    def likes(movie: String): Boolean = movie == favoriteMovie
     def hangOutWith(person: Person): String = 
       s"${this.name} is hanging out with ${person.name}"
-    def unary_! : String = s"$name!!!"
     def isAlive: Boolean = true
-
-    def apply(): String = s"Hi, my name is $name and I like $favoriteMovies"
-
+    
+    def apply(): String = s"Hi, my name is $name and I like $favoriteMovie"
+    def apply(times: Int): String = s"$name watched $favoriteMovie $times times"
+    
     // can use special characters in method names
+    def +(nickName: String): Person = Person(s"$name ($nickName)", favoriteMovie, age)    
     def *>(person: Person): String =   // the "hang out with" operator
       s"${this.name} is hanging out with ${person.name}"
+    
+    def unary_! : String = s"$name!!!"
+    def unary_+ : Person = Person(name, favoriteMovie, age+1)
 
+    def learns(topic: String): String = s"$name learns $topic"
+    def learnsScala: String = this learns "Scala"
 
   val mary = this.Person("Mary", "Inception")
   println(s"Mary likes 'Inception': ${mary.likes("Inception")}")
@@ -47,5 +53,11 @@ object `02_01_MethodNotations` extends App {
 
 
   // Exercises
-  
+  println((mary + "the rockstar")())
+  println(s"${mary.name} is ${mary.age} years old")
+  val mary2: Person = +mary
+  println(s"${mary2.name} is ${mary2.age} years old")
+  println(s"${mary.learns("cool scala stuff")}")
+  println(s"${mary learnsScala}")
+  println(mary(4))
 }
