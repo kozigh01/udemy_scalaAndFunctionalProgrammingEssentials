@@ -1,4 +1,4 @@
-package exercises.c
+package exercises
 
 
 abstract class MyList3[+T]:
@@ -53,4 +53,4 @@ class Bird(name: String) extends  Animal(name):
   println(s"mylist: ${mylist3.toString()}")
   
   val mylistSting = MyList3NonEmpty[String]("!", MyList3NonEmpty("Scala", MyList3NonEmpty("Hello", MyList3Empty())))
-  println(s"mylist: ${mylist3.toString()}")
+  println(s"mylist: ${mylistSting.toString()}")
