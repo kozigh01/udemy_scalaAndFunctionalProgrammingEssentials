@@ -17,19 +17,19 @@ abstract class MyList3[+T]:
   override def toString(): String = s"[${printElements()}]"
   def map[V >: T, U >: T](transformer: MyTransformer[V, U]): MyList3[U]
 
-class MyList3Empty[T <: Nothing] extends MyList3[T]:
+class MyList3Empty extends MyList3[Nothing]:
   def head(): Nothing = throw new NoSuchElementException
   def tail(): MyList3[Nothing] = throw new NoSuchElementException
   def isEmpty(): Boolean = true
-  def add[U >: T](n: U): MyList3[U] = MyList3NonEmpty(n, this)
+  def add[U >: Nothing](n: U): MyList3[U] = MyList3NonEmpty(n, this)
   override def printElements(): String = ""
-  def map[V >: Nothing, U >: T](transformer: MyTransformer[V, U]): MyList3[U] = MyList3Empty()
+  def map[V >: Nothing, U >: Nothing](transformer: MyTransformer[V, U]): MyList3[U] = MyList3Empty()
 
 class MyList3NonEmpty[+T](val headVal: T, val tailVal: MyList3[T]) extends MyList3[T]:
   def head(): T = headVal
   def tail(): MyList3[T] = tailVal
   def isEmpty(): Boolean = false
-  def add[U >: T](n: U): MyList3[U] = MyList3NonEmpty[U](n, this)
+  def add[U >: T](element: U): MyList3[U] = MyList3NonEmpty[U](element, this)
   override def printElements(): String = 
     this.isEmpty() match
       case true => ""
@@ -51,8 +51,8 @@ class Cat(name: String) extends  Animal(name):
 class Bird(name: String) extends  Animal(name):
   override def toString(): String = s"I am a Bird named '$name'"
 
-@main def myList3() =
-  val mylist = MyList3Empty()
+@main def myListCovariance() =
+  val mylist: MyList3[Cat] = MyList3Empty()
   println(s"mylist: ${mylist.toString()}")
 
   val cat = Cat("boots")
