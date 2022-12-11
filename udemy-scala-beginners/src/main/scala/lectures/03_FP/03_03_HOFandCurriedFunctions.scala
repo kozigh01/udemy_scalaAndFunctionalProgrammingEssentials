@@ -40,4 +40,7 @@ object HOFandCurriedFunctions extends App {
   println(s"standardFormat(Math.PI): ${standardFormat(Math.PI)}")
   println(s"preciseFormat(Math.PI): ${preciseFormat(Math.PI)}")
 
+
+  // Exercises
+  
 }
