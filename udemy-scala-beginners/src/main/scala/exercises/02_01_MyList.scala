@@ -19,6 +19,7 @@ object MyList_02_01 extends App:
     def foreach(func: T => Unit): Unit
     def sort(func: (T, T) => Int): MyList[T]
     def zipWith[U >: T, S](otherList: MyList[U], func: (U, U) => S): MyList[S]
+    def fold[U >: T, V](start: V)(func: (accum: V, el: U) => V): V
 
   case class MyListEmpty() extends MyList[Nothing]:
     def head(): Nothing = throw new NoSuchElementException
@@ -34,6 +35,7 @@ object MyList_02_01 extends App:
     def foreach(func: Nothing => Unit): Unit = ()
     def sort(func: (Nothing, Nothing) => Int): MyList[Nothing] = MyListEmpty()
     def zipWith[U >: Nothing, S](otherList: MyList[U], func: (U, U) => S): MyList[S] = MyListEmpty()
+    def fold[U >: Nothing, V](start: V)(func: (accum: V, el: U) => V): V = start
 
   case class MyListNonEmpty[+T](val headVal: T, val tailVal: MyList[T]) extends MyList[T]:
     def head(): T = headVal
@@ -74,6 +76,7 @@ object MyList_02_01 extends App:
     def sort(func: (T, T) => Int): MyList[T] = ???
     def zipWith[U >: T, S](otherList: MyList[U], func: (U, U) => S): MyList[S] = 
       MyListNonEmpty(func(head(), otherList.head()), tail().zipWith(otherList.tail(), func))
+    def fold[U >: T, V](start: V)(func: (accum: V, el: U) => V): V = ???
 
   class Animal(val name: String):
     override def toString(): String = s"I am an Animal named '$name'"
