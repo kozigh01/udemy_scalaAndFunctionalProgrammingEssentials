@@ -17,8 +17,8 @@ object MyList_02_01 extends App:
     def filter(predicate: T => Boolean): MyList[T]
     def ++[B >: T](list: MyList[B]): MyList[B]
     def foreach(func: T => Unit): Unit
-    def sort(func: (T, T) => Int): MyList[T]
-    def zipWith[U >: T, S](otherList: MyList[U], func: (U, U) => S): MyList[S]
+    def sort(compare: (T, T) => Int): MyList[T]
+    def zipWith[U >: T, S, V](otherList: MyList[S], func: (U, S) => V): MyList[V]
     def fold[U >: T, V](start: V)(func: (accum: V, el: U) => V): V
 
   case class MyListEmpty() extends MyList[Nothing]:
@@ -33,8 +33,8 @@ object MyList_02_01 extends App:
     def flatMap[U](transformer: Nothing => MyList[U]): MyList[U] = MyListEmpty()
     def filter(prediCat5e: Nothing => Boolean): MyList[Nothing] = MyListEmpty()
     def foreach(func: Nothing => Unit): Unit = ()
-    def sort(func: (Nothing, Nothing) => Int): MyList[Nothing] = MyListEmpty()
-    def zipWith[U >: Nothing, S](otherList: MyList[U], func: (U, U) => S): MyList[S] = MyListEmpty()
+    def sort(copare: (Nothing, Nothing) => Int): MyList[Nothing] = MyListEmpty()
+    def zipWith[U >: Nothing, S, V](otherList: MyList[S], func: (U, S) => V): MyList[V] = MyListEmpty()
     def fold[U >: Nothing, V](start: V)(func: (accum: V, el: U) => V): V = start
 
   case class MyListNonEmpty[+T](val headVal: T, val tailVal: MyList[T]) extends MyList[T]:
@@ -73,10 +73,17 @@ object MyList_02_01 extends App:
     def foreach(func: T => Unit): Unit = 
       func(head())
       tail().foreach(func)
-    def sort(func: (T, T) => Int): MyList[T] = ???
-    def zipWith[U >: T, S](otherList: MyList[U], func: (U, U) => S): MyList[S] = 
+    def sort(compare: (T, T) => Int): MyList[T] = 
+      def insert(x: T, sortedList: MyList[T]): MyList[T] =
+        if (sortedList.isEmpty()) then new MyListNonEmpty(x, MyListEmpty())
+        else if (compare(x, sortedList.head()) <= 0) then MyListNonEmpty(x, sortedList)
+        else MyListNonEmpty(sortedList.head(), insert(x, sortedList.tail()))
+      val sortedTail = tail().sort(compare)
+      insert(head(), sortedTail)
+    def zipWith[U >: T, S, V](otherList: MyList[S], func: (U, S) => V): MyList[V] = 
       MyListNonEmpty(func(head(), otherList.head()), tail().zipWith(otherList.tail(), func))
-    def fold[U >: T, V](start: V)(func: (accum: V, el: U) => V): V = ???
+    def fold[U >: T, V](start: V)(func: (accum: V, el: U) => V): V = 
+      tail().fold(func(start, head()))(func)
 
   class Animal(val name: String):
     override def toString(): String = s"I am an Animal named '$name'"
@@ -129,12 +136,26 @@ object MyList_02_01 extends App:
     MyListEmpty()
       .add(Cat("boots")).add(Dog("rusty")).add(Bird("tweety"))
       .foreach(animal => println(s"foreach: $animal"))
+
+    val list_1 = MyListEmpty().add(1).add(3).add(2)
+    println(s"list_1.sorted(_ - _): ${list_1.sort(_ - _)}")
+    println(s"list_1.sorted((x,y) => y - x): ${list_1.sort((x,y) => y - x)}")
     
     val list1_1 = MyListEmpty().add(Cat("boots")).add(Dog("rusty")).add(Bird("tweety"))
     val list1_2 = MyListEmpty().add(Cat("whiskers")).add(Dog("bandito")).add(Bird("big"))
     val list1Zip = list1_1.zipWith(list1_2, (l1, l2) => s"$l1 likes $l2")
     println(list1Zip)
     println(list1Zip.foreach(el => println(el)))
+    println(s"list1_1.fold(List[String]())((accum,a) => a.name :: accum): ${list1_1.fold(List[String]())((accum,a) => a.name :: accum)}")
 
-    
+
+    // excercises examples
+    val l1 = MyListEmpty().add(1).add(2).add(3)
+    val l2 = MyListEmpty().add(4).add(5).add(6)
+    l1.foreach(x => println(s"l1.foreach: $x"))
+    println(s"l1.zipWith(l2, (x,y) => x * y): ${l1.zipWith(l2, (x,y) => x * y)}")
+    println(s"l1.fold(0)((x,y) => x + y): ${l1.fold(0)((x,y) => x + y)}")
+    val accum = Seq[Int]()
+    println(s"l1.fold(List[Int]())((x,y) => x.add(y)): ${l1.fold(List[Int]())((x: List[Int],y: Int) => y :: x)}")
+  
   main()

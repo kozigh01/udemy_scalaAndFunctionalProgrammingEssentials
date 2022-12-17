@@ -42,5 +42,26 @@ object HOFandCurriedFunctions extends App {
 
 
   // Exercises
-  
+  /*
+    1. Expand My List
+        - foreach method A => Unit
+        - sort function ((A, A) => Int) => MyList
+        - zipWith (list, (A, A) => MyList[B])
+        - fold(start)(function) => a value
+
+    2. toCurry(f: (Int, Int) => Int) => (Int => Int => Int)
+  */
+  val toCurry: ((Int, Int) => Int) => (Int => Int => Int) = (f: ((Int, Int) => Int)) =>
+    (a: Int) => ((b: Int) => f(a, b))
+  val curried1 = toCurry((x: Int, y: Int) => x + y)
+  val add6 = curried1(6)
+  println(s"add6(7): ${add6(7)}") 
+
+  val compose: (Int => Int, Int => Int) => Int => Int = (f: (Int => Int), g: (Int => Int)) =>
+    (x: Int) => f(g(x))
+  println(s"compose(x => x + 1, y => y * 2)(3): ${compose(_ + 1, _ * 2)(3)}")
+
+  val andThen: (Int => Int, Int => Int) => Int => Int = (f: (Int => Int), g: (Int => Int)) =>
+    (x: Int) => g(f(x))
+  println(s"andThen(x => x + 1, y => y * 2)(3): ${andThen(_ + 1, _ * 2)(3)}")
 }
