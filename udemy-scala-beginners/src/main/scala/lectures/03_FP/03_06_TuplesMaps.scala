@@ -52,18 +52,18 @@ object TuplesMaps:
     println(s"map3 - keys to lower case: ${map3.map((k, v) => (k.toLowerCase(), v))}")
 
   def exercise2 =
-    def add(network: Map[String, List[String]], person: String): Map[String, List[String]] =
-      network + (person -> List())
-    def friend(network: Map[String, List[String]], a: String, b: String): Map[String, List[String]] =
+    def add(network: Map[String, Set[String]], person: String): Map[String, Set[String]] =
+      network + (person -> Set())
+    def friend(network: Map[String, Set[String]], a: String, b: String): Map[String, Set[String]] =
       network.map((k, v) => (
         k,
-        if k == a then v :+ b
-        else if k == b then v :+ a
+        if k == a then v + b
+        else if k == b then v + a
         else v
       ))
-    def remove(network: Map[String, List[String]], person: String): Map[String, List[String]] =
+    def remove(network: Map[String, Set[String]], person: String): Map[String, Set[String]] =
       network.view.filterKeys(k => k != person).toMap
-    def unfriend(network: Map[String, List[String]], a: String, b: String): Map[String, List[String]] =
+    def unfriend(network: Map[String, Set[String]], a: String, b: String): Map[String, Set[String]] =
       network.map((k, v) => (
         k,
         if k == a then v.filter(v => v != b)
@@ -71,7 +71,7 @@ object TuplesMaps:
         else v
       ))
 
-    val network = Map("Jim" -> List(), "Bob" -> List(), "Kevin" -> List())
+    val network = Map("Jim" -> Set[String](), "Bob" -> Set[String](), "Kevin" -> Set[String]())
     println(s"network: $network")
     val network2 = add(network, "Ray")
     println(s"network after add: $network2")
