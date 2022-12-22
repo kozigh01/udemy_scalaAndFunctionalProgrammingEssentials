@@ -77,11 +77,6 @@ object MapFlatmapFilterForComprehensions:
     case class Just[+A](value: A) extends Maybe[A]:
       def map[C](f: A => C): Maybe[C] = Just(f(value))
       def flatMap[C](f: A => Maybe[C]): Maybe[C] = f(value)
-      // def flatMap[C](f: A => Maybe[C]): Maybe[C] = 
-      //   val newJust = f(value)
-      //   newJust match
-      //     case MaybeNot => MaybeNot
-      //     case newJust => newJust        
       def filter(f: A => Boolean): Maybe[A] = 
         f(value) match
           case true => this
@@ -95,7 +90,7 @@ object MapFlatmapFilterForComprehensions:
     println(s"maybe1.filter(x => x % 2 == 0): ${maybe1.filter(x => x % 2 == 0)}")
 
     val maybe2: Maybe[Int] = Just(42)
-    println(s"maybe2: $maybe1")
+    println(s"maybe2: $maybe2")
     println(s"maybe2.map(x => 4): ${maybe2.map(x => 4)}")
     println(s"maybe2.flatMap(x => Just(5)): ${maybe2.flatMap(x => Just(5))}")
     println(s"maybe2.filter(x => x % 2 == 0): ${maybe2.filter(x => x % 2 == 0)}")
