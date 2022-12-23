@@ -1,5 +1,7 @@
 package lectures.`03_FP`
 
+import scala.util.Random
+
 object Options:
   def optionExamples = 
     val map1 = Map("Bob" -> 42)
@@ -60,13 +62,50 @@ object Options:
     println(s"Option(5).filter(_ > 5): ${Option(5).filter(_ > 5)}")
     println(s"Option(5).filter(_ >= 5): ${Option(5).filter(_ >= 5)}")
 
-    // for comprehensions (since we have proper map, flatmap and filter)
-    exer
+  // for comprehensions (since we have proper map, flatmap and filter)
+  def exerercises() =
+    val config: Map[String, String] = Map(
+      // fetched from elsewhere -- may contain missing data
+      "host" -> "176.45.36.1",
+      // "host" -> null,
+      // "port" -> "80"
+      "port" -> null
+    )
+    val result: Option[String] = for
+      host <- config.get("host") if host != null
+      port <- config.get("port") if port != null
+      // connection1 <- Connection(host, port)
+    yield {
+      val connection1: Option[Connection] = Connection(host, port)
+      connection1 match
+        case None => "connection failed"
+        case Some(conn) => conn.connect
+    }
+    result match
+      case None => println("there is a configuration issue")
+      case Some(msg) => println(msg)
 
-
-
+    // alternate approach
+    val host1 = config.get("host")
+    val port1 = config.get("port")
+    val conn1 = host1.flatMap(h => port1.flatMap(p => Connection(h, p)))
+    val connStatus1 = conn1.map(conn => conn.connect)
+    connStatus1.foreach(println)
+    println(connStatus1)
+    
+    
+  class Connection:
+    def connect = "Connected"
+    
+  object Connection:
+    val random = Random(System.nanoTime)
+    def apply(host: String, port: String): Option[Connection] =
+      random.nextBoolean() match
+        case true => Option(new Connection)
+        case false => Option(null)
+  
 @main def optionsMain =
   // Options.optionExamples
   // Options.optionsBasics
-  Options.optionsBasics2
-  
+  // Options.optionsBasics2
+  Options.exerercises() 
