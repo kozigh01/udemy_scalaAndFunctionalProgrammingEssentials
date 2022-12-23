@@ -63,6 +63,7 @@ object TryErrorHandling:
     val hostname = "localhost"
     val port = "8080"
     def renderHTML(page: String) = println(page)
+    def renderHTMLSafe(page: String): Try[Unit] = Try(println(page))
 
     class Connection:
       def get(url: String): String =
@@ -71,12 +72,16 @@ object TryErrorHandling:
           case true => ("<html>....</html>")
           case false => throw new RuntimeException("connection interrupted")
       
+      def getSafe(url: String): Try[String] = Try(get(url))
+      
     object HttpService:
       val random = Random(System.nanoTime())
+
       def getConnection(host: String, port: String): Connection =
         random.nextBoolean() match
           case true => Connection()
           case false => throw new RuntimeException("someone took the port")
+      def safeGetConnection(host: String, port: String): Try[Connection] = Try(getConnection(host, port))
 
     Try(HttpService.getConnection(hostname, port))
       .flatMap(conn => Try(conn.get("http://blah.com")))
@@ -89,6 +94,18 @@ object TryErrorHandling:
     do renderHTML(content)
     println("afrter for comprehension render")
 
+    val content = HttpService.safeGetConnection(hostname, port)
+      .flatMap(conn => conn.getSafe("a url"))
+      .flatMap(page => renderHTMLSafe(page))
+    content.fold(
+        ex => println(s"error: $ex"),
+        v => println("it all worked, woohoo!")
+      )
+    content.failed.foreach(err => println(s"there was an error: $err"))
+      // content.foreach(content => renderHTML(content))
+      // content match
+      //   case Success(value) => renderHTML(value)
+      //   case Failure(exception) => println(exception)
 
 @main def TryErrorHandlingMain =
   // TryErrorHandling.tryBasics
