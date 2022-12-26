@@ -75,13 +75,12 @@ object PatternMatching:
       e match
         case Number(nbr) => s"$nbr"
         case Sum(e1, e2) => s"${show(e1)} + ${show(e2)}"
-        case Prod(e1, e2) => 
-          def maybeShowParentheses(exp: Expr): String = exp match
-            case Prod(_, _) => show(exp)
-            case Number(_) => show(exp)
-            case _ => s"(${show(exp)})"
-          s"${maybeShowParentheses(e1)} * ${maybeShowParentheses(e2)}}"
-          
+        // case Prod(e1, e2) => 
+        //   def maybeShowParentheses(exp: Expr): String = exp match
+        //     case Prod(_, _) => show(exp)
+        //     case Number(_) => show(exp)
+        //     case _ => s"(${show(exp)})"
+        //   s"${maybeShowParentheses(e1)} * ${maybeShowParentheses(e2)}}"          
         case Prod(e1, e2) if e1.isInstanceOf[Sum] && e2.isInstanceOf[Sum] => s"(${displayExpr(e1)}) * (${displayExpr(e2)})"
         case Prod(e1, e2) if e1.isInstanceOf[Sum] => s"(${displayExpr(e1)}) * ${displayExpr(e2)}"
         case Prod(e1, e2) if e2.isInstanceOf[Sum] => s"${displayExpr(e1)} * (${displayExpr(e2)})"
